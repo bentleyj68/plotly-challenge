@@ -1,11 +1,11 @@
-// App
+// App - javascript to update the "Belly Button" information on the web page
 
 // Run this function on the Dropdown update
 function optionChanged(id) {
     updatePlot(id);
 }
 
-// Update all the Plots on the web page
+// Update all the Plots and Demographic on the web page
 function updatePlot(id){
 
     console.log(`The value selected is ${id}`);
@@ -29,6 +29,9 @@ function updatePlot(id){
         // Update all the charts
         updateBarPlot(samples_top_ten, otu_labels, otu_hover);
         updateBubbleChart(samples);
+
+        // Update the demographic
+        updateDemographic(data.metadata.filter(meta => meta.id.toString() === id)[0]);
 
     });
 }
@@ -95,6 +98,21 @@ function updateBubbleChart(samples){
 
     // update the bubble chart
     Plotly.newPlot("bubble", data, layout); 
+}
+
+// Update the Demographic
+function updateDemographic(metadata){
+    console.log(metadata);
+    // set the demographic div id 
+    var demographic_div = d3.select("#sample-metadata");
+        
+    // clear the demographic div
+    demographic_div.html("");
+
+    // Update the panel
+    Object.entries(metadata).forEach((key) => {   
+            demographic_div.append("p").text(key[0] + ": " + key[1]);    
+    });
 }
 
 
