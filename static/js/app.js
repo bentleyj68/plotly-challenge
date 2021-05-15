@@ -29,9 +29,12 @@ function updatePlot(id){
         // Update all the charts
         updateBarPlot(samples_top_ten, otu_labels, otu_hover);
         updateBubbleChart(samples);
+        meta = data.metadata.filter(meta => meta.id.toString() === id)[0];
+        // console.log(meta.wfreq);
+        updateGauge(meta.wfreq);
 
         // Update the demographic
-        updateDemographic(data.metadata.filter(meta => meta.id.toString() === id)[0]);
+        updateDemographic(meta);
 
     });
 }
@@ -115,6 +118,46 @@ function updateDemographic(metadata){
     });
 }
 
+// Bonus - Update the Gauge - Graph 3
+function updateGauge(wfreq){
+    console.log(wfreq);
+    data = [
+        {
+            type: "indicator",
+            mode: "gauge+number",
+            value: parseFloat(wfreq), 
+            title: { text: "Belly Button Washing Frequency \n Scrubs per Week", font: { size: 16 } },
+            gauge: {
+                axis: { range: [null, 9], tickwidth: 1, tickcolor: "darkblue" },
+                bar: { color: "#696969" },
+                bgcolor: "white",
+                borderwidth: 2,
+                bordercolor: "#696969",
+                steps: [
+                { range: [0, 1], color: 'rgb(8, 29, 88)' },
+                { range: [1, 2], color: 'rgb(37, 52, 148)' },
+                { range: [2, 3], color: 'rgb(34, 94, 168)' },
+                { range: [3, 4], color: 'rgb(29, 145, 192)' },
+                { range: [4, 5], color: 'rgb(65, 182, 196)' },
+                { range: [5, 6], color: 'rgb(127, 205, 187)' },
+                { range: [6, 7], color: 'rgb(99, 233, 180)' },
+                { range: [7, 8], color: 'rgb(237, 248, 217)' },
+                { range: [8, 9], color: 'rgb(255, 225, 217)' },
+                ],
+            }
+        }
+    ];
+    
+    layout = {
+        width: 500,
+        height: 400,
+        margin: { t: 25, r: 25, l: 25, b: 25 },
+        paper_bgcolor: "white",
+        font: { color: "#696969", family: "Arial" }
+    };
+    
+    Plotly.newPlot('gauge', data, layout);
+}
 
 // Initial function to read in data and update the dropdown
 function init() {
