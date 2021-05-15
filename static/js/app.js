@@ -5,7 +5,7 @@ function optionChanged(id) {
     updatePlot(id);
 }
 
-// Update the Bar Chart Plot
+// Update all the Plots on the web page
 function updatePlot(id){
 
     console.log(`The value selected is ${id}`);
@@ -26,39 +26,75 @@ function updatePlot(id){
         // Add OTU to labels
         var otu_labels = otu_top_ten.map(d => "OTU " + d)
 
-        // create trace variable for the plot
-        var trace1 = {
-            x: samples_top_ten,
-            y: otu_labels,
-            text: otu_hover,
-            orientation: "h",
-            marker: {
-                color: 'rgb(72, 120, 170)',
-                width: 1
-            },
-            type:"bar"
-        };
-
-        // create data variable
-        var data = [trace1];
-
-        // create layout variable to set plots layout
-        var layout = {
-            yaxis:{
-                tickmode:"linear",
-            },
-            margin: {
-                l: 100,
-                r: 100,
-                t: 0,
-                b: 30
-            }
-        };
-
-        // create the bar plot
-        Plotly.newPlot("bar", data, layout);
+        // Update all the charts
+        updateBarPlot(samples_top_ten, otu_labels, otu_hover);
+        updateBubbleChart(samples);
 
     });
+}
+
+// Update the Bar Plot - Graph 1
+function updateBarPlot(samples_top_ten, otu_labels, otu_hover){
+
+    // create trace variable for the plot
+    var trace1 = {
+        x: samples_top_ten,
+        y: otu_labels,
+        text: otu_hover,
+        orientation: "h",
+        marker: {
+            color: 'rgb(72, 120, 170)',
+            width: 1
+        },
+        type:"bar"
+    };
+
+    // create data variable
+    var data = [trace1];
+
+    // create layout variable to set plots layout
+    var layout = {
+        yaxis:{
+            tickmode:"linear",
+        },
+        margin: {
+            l: 100,
+            r: 100,
+            t: 0,
+            b: 20
+        }
+    };
+
+    // create the bar plot
+    Plotly.newPlot("bar", data, layout);
+}
+
+
+// Update the Bubble Chart - Graph 2
+function updateBubbleChart(samples){
+
+    var trace2 = {
+        x: samples.otu_ids,
+        y: samples.sample_values,
+        mode: "markers",
+        marker: {
+            size: samples.sample_values,
+            color: samples.otu_ids
+        },
+        text: samples.otu_labels
+    };
+
+    // set the layout for the bubble plot
+    var layout = {
+        xaxis:{title: "OTU ID"},
+        height: 600,
+        width: 1200
+    };
+
+    var data = [trace2];
+
+    // update the bubble chart
+    Plotly.newPlot("bubble", data, layout); 
 }
 
 
@@ -77,7 +113,9 @@ function init() {
             dropdown.append("option").text(name).property("value");
         });     
         
+        // Display the Plots for the first entry in the dataset
         updatePlot(data.names[0]);
+
     });
 }
 
